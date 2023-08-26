@@ -1,34 +1,73 @@
-import { Injectable, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  UnprocessableEntityException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/request-user.dto';
 import { User } from './entities/user.entity';
 import { RepositoryProvides } from 'src/constant';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject(RepositoryProvides.users) private userRepository: Repository<User>,
+    @Inject(RepositoryProvides.USER_REPOSITORY)
+    private userRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    console.log(createUserDto);
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    const { BC_SALT } = process.env;
+    const user = new User();
+    user.username = createUserDto.username;
+    user.password = await bcrypt.hash(createUserDto.password, +BC_SALT);
+    try {
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw new UnprocessableEntityException('Create User Fail.');
+    }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    try {
+      return await this.userRepository.find();
+    } catch (error) {
+      throw new NotFoundException('User Not Found');
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(param: number | string) {
+    console.log(typeof param);
+    try {
+      return await this.userRepository.findOneByOrFail(
+        typeof param === 'number' ? { id: param } : { username: param },
+      );
+    } catch (error) {
+      throw new NotFoundException('User Not Found');
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    console.log(updateUserDto);
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.findOne(id);
+    user.role = updateUserDto.role;
+    try {
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw new UnprocessableEntityException('Update User Fail.');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.findOne(id);
+    try {
+      const result = await this.userRepository.softDelete(user.id);
+      if (result.affected === 0) throw new Error();
+      return {
+        message: 'Delete User Success.',
+      };
+    } catch (error) {
+      throw new UnprocessableEntityException('Delete User Fail.');
+    }
   }
 }

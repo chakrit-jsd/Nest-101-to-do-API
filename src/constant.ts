@@ -1,7 +1,7 @@
-export const DatabaseProvides = {
-  mysql: 'DB_MYSQL',
-};
+export enum DatabaseProvides {
+  DB_MYSQL = 'DB_MYSQL',
+}
 
-export const RepositoryProvides = {
-  users: 'USER_REPOSITORY',
-};
+export enum RepositoryProvides {
+  USER_REPOSITORY = 'USER_REPOSITORY',
+}

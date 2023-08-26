@@ -1,19 +1,37 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+export enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @Column({ length: 30 })
+  @Column({ length: 30, unique: true })
   username: string;
 
   @Column({ length: 60 })
   password: string;
 
-  @Column()
+  @Column({ default: UserRole.USER })
+  role: UserRole;
+
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
