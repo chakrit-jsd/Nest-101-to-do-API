@@ -7,7 +7,7 @@ import {
 import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto/request-user.dto';
 import { User } from './entities/user.entity';
-import { RepositoryProvides } from 'src/constant';
+import { RepositoryProvides } from 'src/constants';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -38,7 +38,6 @@ export class UsersService {
   }
 
   async findOne(param: number | string) {
-    console.log(typeof param);
     try {
       return await this.userRepository.findOneByOrFail(
         typeof param === 'number' ? { id: param } : { username: param },

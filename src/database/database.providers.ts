@@ -1,4 +1,4 @@
-import { DatabaseProvides } from 'src/constant';
+import { DatabaseProvides } from 'src/constants';
 import { DataSource } from 'typeorm';
 
 export const databaseProviders = [

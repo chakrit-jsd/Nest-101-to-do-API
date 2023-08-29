@@ -4,4 +4,5 @@ export enum DatabaseProvides {
 
 export enum RepositoryProvides {
   USER_REPOSITORY = 'USER_REPOSITORY',
+  TASK_REPOSITORY = 'TASK_REPOSITORY',
 }

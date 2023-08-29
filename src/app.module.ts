@@ -5,6 +5,7 @@ import { DatabaseModule } from 'src/database/database.module';
 import { RepositoryModule } from './repositories/repositories.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { JwtModule } from '@nestjs/jwt';
     RepositoryModule,
     UsersModule,
     AuthModule,
+    TasksModule,
   ],
   controllers: [],
   providers: [],

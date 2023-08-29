@@ -32,3 +32,15 @@ export class AuthGuard implements CanActivate {
     return type === 'Bearer' ? token : undefined;
   }
 }
+
+@Injectable()
+export class RoleAdminGuard implements CanActivate {
+  constructor(private readonly usersService: UsersService) {}
+  async canActivate(context: ExecutionContextHost): Promise<boolean> {
+    const req = context.switchToHttp().getRequest();
+    if (req['user']?.role !== 'ADMIN') {
+      throw new UnauthorizedException('Admin Only');
+    }
+    return true;
+  }
+}
